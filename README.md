@@ -147,4 +147,3 @@ ng generate service service-name --project tool-templates-ang15
 ## Лицензия
 
 MIT
-```
