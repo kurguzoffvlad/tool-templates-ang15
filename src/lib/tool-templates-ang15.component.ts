@@ -3,7 +3,7 @@ import {
 	Component,
 	TemplateRef,
 	ViewChild,
-	inject,
+	inject, OnDestroy,
 } from '@angular/core';
 import { TemplateRegistryService } from './template-registry.service';
 
@@ -33,16 +33,29 @@ import { TemplateRegistryService } from './template-registry.service';
     }
   `],
 })
-export class ToolTemplatesAng15Component implements AfterViewInit {
+export class ToolTemplatesAng15Component implements AfterViewInit, OnDestroy {
 	private registry = inject(TemplateRegistryService);
 
-	@ViewChild('userCard', { static: true }) userCard!: TemplateRef<any>;
+	@ViewChild('userCard', { static: true }) userCard!: TemplateRef<unknown>;
 	@ViewChild('emptyState', { static: true }) emptyState!: TemplateRef<void>;
 	@ViewChild('loading', { static: true }) loading!: TemplateRef<void>;
 
+	private get templates(): Record<string, TemplateRef<unknown>> {
+		return {
+			userCard: this.userCard,
+			emptyState: this.emptyState,
+			loading: this.loading,
+		};
+	}
+
 	ngAfterViewInit(): void {
-		this.registry.register('userCard', this.userCard);
-		this.registry.register('emptyState', this.emptyState);
-		this.registry.register('loading', this.loading);
+		Object.entries(this.templates).forEach(([key, tpl]) => {
+			this.registry.register(key, tpl);
+		});
+	}
+
+	/* Если не удалить шаблоны при уничтожении компонента, сборщик мусора не сможет очистить их из памяти. */
+	ngOnDestroy(): void {
+		this.registry.unregister(...Object.keys(this.templates));
 	}
 }
