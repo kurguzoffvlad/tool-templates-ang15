@@ -1,5 +1,7 @@
 # tool-templates-ang15
 
+## Использование в https://github.com/kurguzoffvlad/tool-libs-ang15
+
 Библиотека переиспользуемых `ng-template` для Angular 15.
 Позволяет один раз объявить набор шаблонов и использовать их в любом компоненте
 приложения-потребителя через `TemplateRegistryService`.
